@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Type checking — lenient to avoid blocking the dev server */
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    /* Path aliases matching vite.config.ts */
+    "paths": {
+      "@/*":             ["./src/*"],
+      "@auth/*":         ["./src/features/auth/*"],
+      "@booking/*":      ["./src/features/booking/*"],
+      "@catalog/*":      ["./src/features/catalog/*"],
+      "@payment/*":      ["./src/features/payment/*"],
+      "@admin/*":        ["./src/features/admin/*"],
+      "@professional/*": ["./src/features/professional/*"],
+      "@amc/*":          ["./src/features/amc/*"],
+      "@customer/*":     ["./src/features/customer/*"],
+      "@marketing/*":    ["./src/features/marketing/*"],
+      "@shared/*":       ["./src/shared/*"],
+      "@core/*":         ["./src/core/*"],
+      "@utils/*":        ["./src/utils/*"],
+      "@features/*":     ["./src/features/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["src"]
+}
