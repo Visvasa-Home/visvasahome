@@ -127,86 +127,216 @@ export function Hero({ onGetStarted, onRegisterContractor, onContractorHub, onCa
   return (
     <section className="bg-white pt-8 pb-12 border-b border-gray-150">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ── Urban Company Split Hero Layout ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10 text-left">
+          
+          {/* Left Column: Headline, 6 Category Tiles & Rating Bar */}
+          <div className="lg:col-span-6 space-y-6">
+            <div>
+              <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+                Home services at your <span className="text-[#2563EB]">doorstep</span>
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-2 font-medium">
+                Find and book background-verified local service professionals in {location}
+              </p>
+            </div>
 
-        {/* Title and Search Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10">
-          <div className="hidden sm:block">
-            <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight leading-tight">
-              Home services, <span className="text-[#2563EB]">on demand.</span>
-            </h1>
-            <p className="text-sm text-gray-500 mt-2 font-medium">
-              Find and book background-verified local service professionals in {location}
-            </p>
-          </div>
-
-          {/* Urban Company Style Unified Search Bar Capsule */}
-          <div className="mt-8 relative max-w-2xl mx-auto">
-            <div className="flex items-center w-full bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-300 h-16 p-2">
+            {/* Urban Company White Category Tile Box */}
+            <div className="bg-white border border-gray-200/90 rounded-2xl p-5 shadow-sm space-y-5">
               
-              {/* Location Selector (Left) */}
-              <button
-                onClick={() => onCategoryClick?.('location')}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-full transition-colors flex-shrink-0 group cursor-pointer"
-              >
-                <MapPin className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-bold text-gray-800 truncate max-w-[100px] sm:max-w-[140px]">{location}</span>
-                <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+              {/* Top 6 Primary Categories Grid (3 cols x 2 rows) */}
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={() => onCategoryClick?.('beauty-services')}
+                  className="p-3 bg-pink-50/70 hover:bg-pink-100/80 border border-pink-100 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                    <Scissors className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-extrabold text-gray-800 leading-tight">Women's Salon & Spa</span>
+                </button>
 
-              {/* Vertical Divider */}
-              <div className="h-7 w-[1.5px] bg-gray-200 flex-shrink-0" />
+                <button
+                  onClick={() => onCategoryClick?.('wellness-services')}
+                  className="p-3 bg-purple-50/70 hover:bg-purple-100/80 border border-purple-100 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-extrabold text-gray-800 leading-tight">Men's Salon & Massage</span>
+                </button>
 
-              {/* Search input field (Middle) */}
-              <div className="flex-1 flex items-center min-w-0 pl-3">
-                <Search className="w-4.5 h-4.5 text-gray-400 mr-2 flex-shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Search for 'AC repair', 'Home cleaning', 'Plumber'..."
-                  value={searchQuery}
-                  onFocus={() => onCategoryClick?.('search')}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    onCategoryClick?.('search', { query: e.target.value });
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      if (searchQuery.trim()) onCategoryClick?.('search', { query: searchQuery });
-                      else onGetStarted();
-                    }
-                  }}
-                  className="w-full bg-transparent border-none outline-none text-sm font-medium text-gray-800 placeholder-gray-400"
-                />
+                <button
+                  onClick={() => onCategoryClick?.('cleaning-services')}
+                  className="p-3 bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-extrabold text-gray-800 leading-tight">Cleaning & Pest</span>
+                </button>
+
+                <button
+                  onClick={() => onCategoryClick?.('painting-services')}
+                  className="p-3 bg-amber-50/70 hover:bg-amber-100/80 border border-amber-100 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                    <PaintBucket className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-extrabold text-gray-800 leading-tight">Painting & Waterproofing</span>
+                </button>
+
+                <button
+                  onClick={() => onCategoryClick?.('ac-services')}
+                  className="p-3 bg-sky-50/70 hover:bg-sky-100/80 border border-sky-100 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer group relative"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                    <Wind className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-extrabold text-gray-800 leading-tight">AC & Appliance Repair</span>
+                  <span className="mt-1 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black rounded-full leading-none shadow-xs">47 mins</span>
+                </button>
+
+                <button
+                  onClick={() => onCategoryClick?.('electrical-services')}
+                  className="p-3 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-100 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer group relative"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                    <Wrench className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-extrabold text-gray-800 leading-tight">Electrician, Plumber & Carpenter</span>
+                  <span className="mt-1 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black rounded-full leading-none shadow-xs">44 mins</span>
+                </button>
               </div>
 
-              {/* Action Button (Right) */}
-              <button
-                onClick={() => {
-                  if (searchQuery.trim()) onCategoryClick?.('search', { query: searchQuery });
-                  else onGetStarted();
-                }}
-                className="h-full px-7 bg-blue-600 hover:bg-blue-700 text-white text-sm font-extrabold rounded-full flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 flex-shrink-0"
-              >
-                <Search className="w-4 h-4" />
-                <span className="hidden sm:inline">Search</span>
-              </button>
+              {/* Native Products Box */}
+              <div className="border-t border-gray-100 pt-4">
+                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2.5">Native Smart Products</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => onCategoryClick?.('ro-services')}
+                    className="p-3 bg-cyan-50/70 hover:bg-cyan-100/80 border border-cyan-100 rounded-2xl flex items-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm cursor-pointer group"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <Droplets className="w-4 h-4" />
+                    </div>
+                    <span className="text-[11px] font-extrabold text-gray-800">Native Water Purifier</span>
+                  </button>
+
+                  <button
+                    onClick={() => onCategoryClick?.('home-security')}
+                    className="p-3 bg-slate-50/70 hover:bg-slate-100/80 border border-slate-100 rounded-2xl flex items-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm cursor-pointer group"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-slate-500/10 text-slate-700 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    <span className="text-[11px] font-extrabold text-gray-800">Native Smart Locks</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Urban Company Rating Bar Below Left Box */}
+            <div className="flex items-center gap-8 pt-1">
+              <div className="flex items-center gap-2.5">
+                <Star className="w-6 h-6 text-amber-500 fill-amber-500 shrink-0" />
+                <div>
+                  <p className="text-xl font-black text-gray-900 leading-none">4.8</p>
+                  <p className="text-[10px] text-gray-400 font-semibold mt-0.5">Service Rating*</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Shield className="w-6 h-6 text-blue-600 shrink-0" />
+                <div>
+                  <p className="text-xl font-black text-gray-900 leading-none">12M+</p>
+                  <p className="text-[10px] text-gray-400 font-semibold mt-0.5">Customers Globally*</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Popular searches */}
-          <div className="mt-3.5 flex flex-wrap gap-1.5 justify-center items-center px-1">
-            <span className="text-gray-400 text-[10px] font-semibold mr-0.5">Trending:</span>
-            {popularSearches.map((item) => (
-              <button
-                key={item.term}
-                onClick={() => onCategoryClick?.(item.slug)}
-                className="px-2.5 py-1 text-[11px] text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-50 rounded-lg transition-colors font-medium border border-gray-200 hover:border-gray-300"
-              >
-                {item.term}
-              </button>
-            ))}
+          {/* Right Column: 2x2 Image Grid Collage */}
+          <div className="lg:col-span-6 grid grid-cols-2 gap-3.5">
+            <div className="h-56 sm:h-64 rounded-2xl overflow-hidden shadow-md border border-gray-100 group">
+              <img
+                src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=600&auto=format&fit=crop"
+                alt="Salon & Spa Treatment"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="h-56 sm:h-64 rounded-2xl overflow-hidden shadow-md border border-gray-100 group">
+              <img
+                src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop"
+                alt="Massage Therapy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="h-56 sm:h-64 rounded-2xl overflow-hidden shadow-md border border-gray-100 group">
+              <img
+                src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop"
+                alt="Home Repair"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="h-56 sm:h-64 rounded-2xl overflow-hidden shadow-md border border-gray-100 group">
+              <img
+                src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop"
+                alt="AC Jet Service"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
           </div>
+
+        </div>
+
+        {/* Urban Company Style Search Bar Capsule */}
+        <div className="relative max-w-2xl mx-auto mb-6">
+          <div className="flex items-center w-full bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-300 h-16 p-2">
+            <div className="flex-1 flex items-center min-w-0 pl-4">
+              <Search className="w-5 h-5 text-gray-400 mr-3 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search for 'AC repair', 'Home cleaning', 'Plumber'..."
+                value={searchQuery}
+                onFocus={() => onCategoryClick?.('search')}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  onCategoryClick?.('search', { query: e.target.value });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (searchQuery.trim()) onCategoryClick?.('search', { query: searchQuery });
+                    else onGetStarted();
+                  }
+                }}
+                className="w-full bg-transparent border-none outline-none text-sm font-semibold text-gray-800 placeholder-gray-400"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (searchQuery.trim()) onCategoryClick?.('search', { query: searchQuery });
+                else onGetStarted();
+              }}
+              className="h-full px-7 bg-blue-600 hover:bg-blue-700 text-white text-sm font-extrabold rounded-full flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 flex-shrink-0 cursor-pointer"
+            >
+              <Search className="w-4 h-4" />
+              <span className="hidden sm:inline">Search</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Popular searches */}
+        <div className="mt-3.5 flex flex-wrap gap-1.5 justify-center items-center px-1">
+          <span className="text-gray-400 text-[10px] font-semibold mr-0.5">Trending:</span>
+          {popularSearches.map((item) => (
+            <button
+              key={item.term}
+              onClick={() => onCategoryClick?.(item.slug)}
+              className="px-2.5 py-1 text-[11px] text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-50 rounded-lg transition-colors font-medium border border-gray-200 hover:border-gray-300"
+            >
+              {item.term}
+            </button>
+          ))}
         </div>
 
         {/* ── Categories Grid ── */}
