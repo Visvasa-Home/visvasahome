@@ -1,0 +1,954 @@
+﻿diff --git a/src/App.tsx b/frontend/src/App.tsx
+index 1e3638e..94614b8 100644
+--- a/src/App.tsx
++++ b/frontend/src/App.tsx
+@@ -4,15 +4,11 @@ import { HomeCategories } from '@catalog/components/HomeCategories';
+ import { ServicesOffered } from '@catalog/components/ServicesOffered';
+ import { Differentiation } from '@shared/components/Differentiation';
+ import { TestimonialsSection } from '@shared/components/TestimonialsSection';
+-import { ForContractors } from '@professional/components/ForContractors';
++
+ import { CTASection } from '@shared/components/CTASection';
+ import { Footer } from '@shared/components/Footer';
+-import { RegisterContractor } from '@professional/components/RegisterContractor';
++
+ import { GetStartedCustomer } from '@customer/components/GetStartedCustomer';
+-import { JoinProfessional } from '@professional/components/JoinProfessional';
+-import { BenefitsPage } from '@marketing/components/BenefitsPage';
+-import { TrainingSupport } from '@professional/components/TrainingSupport';
+-import { SuccessStories } from '@shared/components/SuccessStories';
+ import { AMCOffice } from '@amc/components/AMCOffice';
+ import { AMCHome } from '@amc/components/AMCHome';
+ import { AMCCommercial } from '@amc/components/AMCCommercial';
+@@ -32,7 +28,7 @@ import { PrivacyPolicyPage } from '@marketing/components/PrivacyPolicyPage';
+ import { TermsPage } from '@marketing/components/TermsPage';
+ import { CareersPage } from '@marketing/components/CareersPage';
+ import { SEO } from '@shared/components/SEO';
+-import { ProfessionalRegisterPage } from '@professional/components/ProfessionalRegisterPage';
++
+ import { AuthPage } from '@auth/components/AuthPage';
+ import { MobileBottomNav } from '@shared/components/MobileBottomNav';
+ import { UserProfilePage } from '@customer/components/UserProfilePage';
+@@ -41,6 +37,8 @@ import { MobileContactBar } from '@shared/components/MobileContactBar';
+ import { BookingService } from '@booking/services/bookingService';
+ import { FloatingFeedbackButton } from '@shared/components/FloatingFeedbackButton';
+ import { MobileTopBar } from '@shared/components/MobileTopBar';
++import { DesktopHeader } from '@shared/components/DesktopHeader';
++
+ import { BookingsPage } from '@booking/components/BookingsPage';
+ import { MenuPage } from '@shared/components/MenuPage';
+ import { EditProfilePage } from '@customer/components/EditProfilePage';
+@@ -49,7 +47,7 @@ import { NotificationsPage } from '@customer/components/NotificationsPage';
+ import { SavedServicesPage } from '@customer/components/SavedServicesPage';
+ import { AppSettingsPage } from '@customer/components/AppSettingsPage';
+ import { HelpSupportPage } from '@customer/components/HelpSupportPage';
+-import { CompetitiveAnalysisPage } from '@admin/components/CompetitiveAnalysisPage';
++
+ import { PlumbingServicesPage } from '@catalog/components/PlumbingServicesPage';
+ import { ElectricalServicesPage } from '@catalog/components/ElectricalServicesPage';
+ import { ACServicesPage } from '@catalog/components/ACServicesPage';
+@@ -68,15 +66,12 @@ import { ExcavationServicesPage } from '@catalog/components/ExcavationServicesPa
+ import { CareServicesPage } from '@catalog/components/CareServicesPage';
+ import { EventServicesPage } from '@catalog/components/EventServicesPage';
+ import { ConstructionServicesPage } from '@marketing/components/ConstructionServicesPage';
+-import { ProfessionalDashboard } from '@professional/components/ProfessionalDashboard';
+-import { AdminLoginPage } from '@auth/components/AdminLoginPage';
+-import { DemoSandboxPanel } from '@admin/components/DemoSandboxPanel';
+-import { AdminDashboard } from '@admin/components/AdminDashboard';
+-import { AdminBookingsPage } from '@admin/components/AdminBookingsPage';
+-import { AdminProfessionalsPage } from '@admin/components/AdminProfessionalsPage';
+-import { AdminCustomersPage } from '@admin/components/AdminCustomersPage';
+-import { AdminServicesPage } from '@admin/components/AdminServicesPage';
+-import { AdminReportsPage } from '@admin/components/AdminReportsPage';
++import { BeautyServicesPage } from '@catalog/components/BeautyServicesPage';
++import { WellnessServicesPage } from '@catalog/components/WellnessServicesPage';
++import { MoversPackersPage } from '@catalog/components/MoversPackersPage';
++import { EducationServicesPage } from '@catalog/components/EducationServicesPage';
++import { PetCarePage } from '@catalog/components/PetCarePage';
++
+ import { ForgotPasswordPage } from '@auth/components/ForgotPasswordPage';
+ import { ResetPasswordPage } from '@auth/components/ResetPasswordPage';
+ import { EmailSignupPage } from '@auth/components/EmailSignupPage';
+@@ -87,48 +82,35 @@ import { SubscriptionManagementPage } from '@amc/components/SubscriptionManageme
+ import { RefundPolicyPage } from '@marketing/components/RefundPolicyPage';
+ import { ServicesPricingPage } from '@catalog/components/ServicesPricingPage';
+ import { PaymentTestingPage } from '@payment/components/PaymentTestingPage';
+-import { ContractorHubPage } from '@professional/components/ContractorHubPage';
+-import { ContractorProjectPage } from '@professional/components/ContractorProjectPage';
+-import { ContractorDirectoryPage } from '@professional/components/ContractorDirectoryPage';
++
+ import { BookingFlowPage } from '@booking/components/BookingFlowPage';
+ import { WalletPage } from '@payment/components/WalletPage';
+ import { LiveTrackingPage } from '@booking/components/LiveTrackingPage';
+-import { SPJobsPage } from '@professional/components/SPJobsPage';
+-import { SPJobDetailPage } from '@professional/components/SPJobDetailPage';
+-import { SPEarningsPage } from '@professional/components/SPEarningsPage';
+-import { SPSchedulePage } from '@professional/components/SPSchedulePage';
+-import { SPTrainingHubPage } from '@professional/components/SPTrainingHubPage';
++
+ import { AMCPackagesPage } from '@amc/components/AMCPackagesPage';
+ import { AMCManagementDashboard } from '@amc/components/AMCManagementDashboard';
+ import { AMCBookingPage } from '@amc/components/AMCBookingPage';
++import { ReferAndEarnPage } from '@customer/components/ReferAndEarnPage';
++
++import { ServiceListPage } from './features/catalog/components/ServiceListPage';
++
++// const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+ import { LoyaltyDashboardPage } from '@customer/components/LoyaltyDashboardPage';
+ import { SubmitReviewPage } from '@booking/components/SubmitReviewPage';
+ import { ChatPage } from '@customer/components/ChatPage';
+ import { ToastProvider, useToast } from '@shared/components/ToastContext';
+ import { SearchPage } from '@catalog/components/SearchPage';
+-import { ContractorQuoteComparisonPage } from '@professional/components/ContractorQuoteComparisonPage';
+-import { InvestorRelationsPage } from '@marketing/components/InvestorRelationsPage';
+-import { PartnerHomePage } from '@professional/components/PartnerHomePage';
+-import { PartnerAboutPage } from '@professional/components/PartnerAboutPage';
+-import { PartnerTermsPage } from '@professional/components/PartnerTermsPage';
+-import { PartnerPrivacyPage } from '@professional/components/PartnerPrivacyPage';
+-import { PartnerAntiDiscriminationPage } from '@professional/components/PartnerAntiDiscriminationPage';
+-import { PartnerInfoSecurityPage } from '@professional/components/PartnerInfoSecurityPage';
+-import { PartnerWelfarePage } from '@professional/components/PartnerWelfarePage';
+-import { PartnerCityPage } from '@professional/components/PartnerCityPage';
++
+ import { HomeSecurityPage } from '@marketing/components/HomeSecurityPage';
+ import { WaterPurifierChimneyPage } from '@marketing/components/WaterPurifierChimneyPage';
+ import { HomeImprovementPage } from '@marketing/components/HomeImprovementPage';
+ import { GreenEnergyPage } from '@marketing/components/GreenEnergyPage';
+ import { CarCleaningPage } from '@marketing/components/CarCleaningPage';
+-import { MoversPackersPage } from '@marketing/components/MoversPackersPage';
+ import { EducationPage } from '@marketing/components/EducationPage';
+-import { PetCarePage } from '@marketing/components/PetCarePage';
+-import { BeautyServicesPage } from '@catalog/components/BeautyServicesPage';
+-import { WellnessServicesPage } from '@catalog/components/WellnessServicesPage';
+ import { InteractiveTour } from '@shared/components/InteractiveTour';
+ import { DiscoverySection } from '@catalog/components/DiscoverySection';
+-import { useState, useEffect, useCallback } from 'react';
++import { useEffect, useState, useMemo } from 'react';
++import { HomeFeed } from './features/catalog/components/HomeFeed';
+ import { ArrowRight, Shield, CheckCircle } from 'lucide-react';
+ import { organizationSchema, localBusinessSchema, serviceSchema, websiteSchema } from '@utils/structuredData';
+ import {
+@@ -211,19 +193,11 @@ type PageType =
+   | 'pet-care'
+   | 'beauty-services'
+   | 'wellness-services'
+-  | 'professional-dashboard'
+-  | 'admin-login'
+-  | 'admin-dashboard'
+-  | 'admin-bookings'
+-  | 'admin-professionals'
+-  | 'admin-customers'
+-  | 'admin-services'
+-  | 'admin-reports'
+-  | 'admin-payments'
+-  | 'admin-reviews'
+-  | 'admin-notifications'
+-  | 'admin-settings'
+-  | 'admin-messages'
++  | 'refer-and-earn'
++  | 'car-services'
++  | 'bike-services'
++  | 'highway-services'
++
+   | 'forgot-password'
+   | 'reset-password'
+   | 'email-signup'
+@@ -231,47 +205,37 @@ type PageType =
+   | 'auth-callback'
+   | 'subscription-management'
+   | 'payment-testing'
+-  | 'contractor-hub'
+-  | 'contractor-project'
+-  | 'contractor-directory'
++
+   | 'booking-flow'
+   | 'wallet'
+   | 'live-tracking'
+-  | 'sp-jobs'
+-  | 'sp-job-detail'
+-  | 'sp-earnings'
+-  | 'sp-schedule'
+-  | 'sp-training'
++
+   | 'amc-packages'
+   | 'amc-purchase'
+   | 'amc-booking'
+   | 'amc-dashboard'
+   | 'amc-visit-history'
+-  | 'contractor-quote-comparison'
+-  | 'contractor-project-detail'
+-  | 'contractor-dashboard'
++
+   | 'chat-list' | 'chat' | 'bug-report' | 'milestones' | 'loyalty-dashboard'
+   | 'submit-review'
+-  | 'investor-relations'
+-  | 'partner-home'
+-  | 'partner-about'
+-  | 'partner-terms'
+-  | 'partner-privacy'
+-  | 'partner-anti-discrimination'
+-  | 'partner-info-security'
+-  | 'partner-welfare'
+-  | 'partner-login'
+-  | 'partner-faq'
+-  | 'partner-city-jaipur'
+-  | 'partner-city-delhi'
+-  | 'partner-city-mumbai'
+-  | 'partner-city-bangalore'
+-  | 'partner-city-pune'
+-  | 'partner-city-hyderabad'
+-  | 'partner-city-chennai'
+-  | 'partner-city-ahmedabad'
+   | 'refund-policy'
+-  | 'services-pricing';
++  | 'services-pricing'
++  | 'admin-login'
++  | 'admin-dashboard'
++  | 'admin-bookings'
++  | 'admin-professionals'
++  | 'admin-customers'
++  | 'admin-services'
++  | 'admin-reports'
++  | 'admin-payments'
++  | 'admin-reviews'
++  | 'admin-notifications'
++  | 'admin-settings'
++  | 'admin-messages'
++  | 'professional-dashboard'
++  | 'partner-login'
++  | 'contractor-hub'
++  | 'contractor-quote-comparison';
+ 
+ const seoMeta: Record<string, { title: string; description: string }> = {
+   'home': {
+@@ -426,6 +390,10 @@ const seoMeta: Record<string, { title: string; description: string }> = {
+     title: 'Competitive Analysis | VisvasaHome vs Urban Company, Housejoy & Pronto',
+     description: 'See how VisvasaHome compares with Urban Company, Housejoy, and Pronto. Comprehensive feature comparison, market analysis, and our unique 8 AMC segment advantage.',
+   },
++  'amc-packages': {
++    title: 'AMC Packages | VisvasaHome',
++    description: 'Explore affordable Annual Maintenance Contracts for home, office, and society.',
++  },
+   'plumbing-services': {
+     title: 'Professional Plumbing Services | Verified Plumbers | VisvasaHome',
+     description: 'Book expert plumbers for tap repair, leak fixing, pipe fitting, geyser installation, drainage work & more. 30-min arrival, verified professionals, service warranty. Starting Γé╣299. Emergency plumbing available 24/7.',
+@@ -518,38 +486,7 @@ const seoMeta: Record<string, { title: string; description: string }> = {
+     title: 'Car Wash & Detailing at Home | VisvasaHome',
+     description: 'Professional car washing and detailing at your doorstep. Basic wash, interior cleaning, ceramic coating, monthly subscription plans available.',
+   },
+-  'professional-dashboard': {
+-    title: 'Professional Dashboard | VisvasaHome',
+-    description: 'Manage your jobs, earnings, and profile as a VisvasaHome professional contractor.',
+-  },
+-  'admin-login': {
+-    title: 'Admin Login | VisvasaHome Administration',
+-    description: 'Secure login for VisvasaHome administrators.',
+-  },
+-  'admin-dashboard': {
+-    title: 'Admin Dashboard | VisvasaHome',
+-    description: 'VisvasaHome admin panel - manage bookings, professionals, customers, and analytics.',
+-  },
+-  'admin-bookings': {
+-    title: 'Manage Bookings | Admin Panel | VisvasaHome',
+-    description: 'View and manage all service bookings - update status, assign professionals.',
+-  },
+-  'admin-professionals': {
+-    title: 'Manage Professionals | Admin Panel | VisvasaHome',
+-    description: 'Verify, approve, and manage all registered professionals and contractors.',
+-  },
+-  'admin-customers': {
+-    title: 'Manage Customers | Admin Panel | VisvasaHome',
+-    description: 'View customer data, booking history, and customer insights.',
+-  },
+-  'admin-services': {
+-    title: 'Manage Services | Admin Panel | VisvasaHome',
+-    description: 'Add, edit, and manage service catalog and pricing.',
+-  },
+-  'admin-reports': {
+-    title: 'Reports & Analytics | Admin Panel | VisvasaHome',
+-    description: 'Revenue reports, booking analytics, and business insights.',
+-  },
++
+   'forgot-password': {
+     title: 'Forgot Password | VisvasaHome',
+     description: 'Reset your VisvasaHome account password.',
+@@ -578,10 +515,7 @@ const seoMeta: Record<string, { title: string; description: string }> = {
+     title: 'Payment Testing | VisvasaHome',
+     description: 'Test payment flows including success, failure, and refund scenarios.',
+   },
+-  'contractor-hub': {
+-    title: 'Contractor Hub | Large Projects & Renovation | VisvasaHome',
+-    description: 'Post your renovation, construction, or interior design project. Get multiple verified quotes. Escrow-protected milestone payments.',
+-  },
++
+   'booking-flow': {
+     title: 'Book a Service | VisvasaHome',
+     description: 'Book verified professionals with slot selection, OTP verification, and escrow-protected payment.',
+@@ -594,78 +528,7 @@ const seoMeta: Record<string, { title: string; description: string }> = {
+     title: 'Live Tracking | VisvasaHome',
+     description: 'Track your service professional in real time. View ETA, chat, and verify job start with OTP.',
+   },
+-  'investor-relations': {
+-    title: 'Investor Relations | VisvasaHome (Visvasa Pvt. Ltd.)',
+-    description: 'Investor information, financial results, board of directors, governance, ESG reports, and corporate announcements for VisvasaHome.',
+-  },
+-  'partner-home': {
+-    title: 'Partner with VisvasaHome | Earn Γé╣30,000-Γé╣90,000/Month as Service Professional',
+-    description: 'Join 50,000+ verified service professionals. Free registration, weekly payouts, flexible hours, training, and insurance. Partner with India\'s most trusted home services platform.',
+-  },
+-  'partner-about': {
+-    title: 'About Partner Program | VisvasaHome',
+-    description: 'Learn about VisvasaHome\'s mission to empower service professionals. 50,000+ partners, Γé╣225Cr+ earnings distributed. Join our community today.',
+-  },
+-  'partner-terms': {
+-    title: 'Partner Terms & Conditions | VisvasaHome',
+-    description: 'Terms and conditions for service professional partners on VisvasaHome platform. Understand your rights, responsibilities, and benefits.',
+-  },
+-  'partner-privacy': {
+-    title: 'Partner Privacy Policy | VisvasaHome',
+-    description: 'Privacy policy for VisvasaHome service professional partners. Learn how we protect your personal information and data.',
+-  },
+-  'partner-anti-discrimination': {
+-    title: 'Anti-Discrimination Policy | VisvasaHome Partners',
+-    description: 'VisvasaHome\'s commitment to equal opportunity and zero tolerance for discrimination. Creating an inclusive platform for all partners.',
+-  },
+-  'partner-info-security': {
+-    title: 'Information Security Policy | VisvasaHome Partners',
+-    description: 'Security guidelines and best practices for VisvasaHome partners. Protecting your data and customer information.',
+-  },
+-  'partner-welfare': {
+-    title: 'Partner Welfare Policy | VisvasaHome',
+-    description: 'Comprehensive welfare benefits for VisvasaHome partners including health insurance, training, financial support, and community programs.',
+-  },
+-  'partner-login': {
+-    title: 'Partner Login | VisvasaHome',
+-    description: 'Login to VisvasaHome Partner Portal to manage jobs, earnings, and profile.',
+-  },
+-  'partner-faq': {
+-    title: 'Partner FAQ | VisvasaHome',
+-    description: 'Frequently asked questions for VisvasaHome service professional partners.',
+-  },
+-  'partner-city-jaipur': {
+-    title: 'Partner with VisvasaHome in Jaipur | 3,200+ Active Partners',
+-    description: 'Join 3,200+ service professionals earning Γé╣42,000/month average in Jaipur. 2,500+ monthly jobs available. Register free.',
+-  },
+-  'partner-city-delhi': {
+-    title: 'Partner with VisvasaHome in Delhi NCR | 12,000+ Active Partners',
+-    description: 'Join 12,000+ service professionals earning Γé╣52,000/month average in Delhi NCR. 8,500+ monthly jobs. Premium market opportunities.',
+-  },
+-  'partner-city-mumbai': {
+-    title: 'Partner with VisvasaHome in Mumbai | 15,000+ Active Partners',
+-    description: 'Join 15,000+ service professionals earning Γé╣58,000/month average in Mumbai. Highest earning potential in India. Register now.',
+-  },
+-  'partner-city-bangalore': {
+-    title: 'Partner with VisvasaHome in Bangalore | 10,500+ Active Partners',
+-    description: 'Join 10,500+ service professionals earning Γé╣51,000/month average in Bangalore. Tech-savvy customers, consistent demand.',
+-  },
+-  'partner-city-pune': {
+-    title: 'Partner with VisvasaHome in Pune | 5,500+ Active Partners',
+-    description: 'Join 5,500+ service professionals earning Γé╣46,000/month average in Pune. Growing IT hub with 4,500+ monthly jobs.',
+-  },
+-  'partner-city-hyderabad': {
+-    title: 'Partner with VisvasaHome in Hyderabad | 7,000+ Active Partners',
+-    description: 'Join 7,000+ service professionals earning Γé╣48,000/month average in Hyderabad. 5,500+ monthly jobs in growing tech city.',
+-  },
+-  'partner-city-chennai': {
+-    title: 'Partner with VisvasaHome in Chennai | Service Professional Jobs',
+-    description: 'Join VisvasaHome\'s partner network in Chennai. Earn competitive income as verified service professional.',
+-  },
+-  'partner-city-ahmedabad': {
+-    title: 'Partner with VisvasaHome in Ahmedabad | Service Professional Jobs',
+-    description: 'Join VisvasaHome\'s partner network in Ahmedabad. Earn competitive income as verified service professional.',
+-  },
++
+   'refund-policy': {
+     title: 'Cancellation, Refund & Shipping Policy | Visvasahome Private Limited',
+     description: 'VisvasaHome cancellation, refund, shipping and payment gateway policy. Free cancellation up to 2 hours before service. Refund to original payment method within 5ΓÇô7 business days.',
+@@ -1381,58 +1244,9 @@ function MainApp() {
+     );
+   }
+ 
+-  // Competitive Analysis
+-  if (currentPage === 'competitive-analysis') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <CompetitiveAnalysisPage onBack={() => navigate('home')} onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
+ 
+-  // Admin Login
+-  if (currentPage === 'admin-login') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <AdminLoginPage onLoginSuccess={handleAdminLogin} onBack={() => navigate('home')} />
+-      </>
+-    );
+-  }
+ 
+-  // Admin Pages (Require Authentication)
+-  const isAdminPage = [
+-    'admin-dashboard',
+-    'admin-bookings',
+-    'admin-professionals',
+-    'admin-customers',
+-    'admin-services',
+-    'admin-reports',
+-    'admin-payments',
+-    'admin-reviews',
+-    'admin-notifications',
+-    'admin-settings',
+-    'admin-messages'
+-  ].includes(currentPage);
+ 
+-  if (isAdminPage) {
+-    if (!isAdminAuthenticated) {
+-      navigate('admin-login');
+-      return null;
+-    }
+-    const section = currentPage === 'admin-dashboard' ? 'dashboard' : currentPage.replace('admin-', '');
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <AdminDashboard
+-          initialSection={section}
+-          onLogout={handleAdminLogout}
+-          onNavigate={handleAdminNavigate}
+-        />
+-      </>
+-    );
+-  }
+ 
+   // Service Pages
+   if (currentPage === 'plumbing-services') {
+@@ -1650,6 +1464,16 @@ function MainApp() {
+     );
+   }
+ 
++  if (currentPage === 'amc-packages') {
++    return (
++      <>
++        <SEO title={meta.title} description={meta.description} />
++        <AMCPackagesPage onBack={() => navigate('home')} onNavigate={(page, data) => navigate(page as PageType, data)} />
++      </>
++    );
++  }
++
++
+   if (currentPage === 'movers-packers') {
+     return (
+       <>
+@@ -1663,7 +1487,7 @@ function MainApp() {
+     return (
+       <>
+         <SEO title={meta.title} description={meta.description} />
+-        <EducationPage onBack={() => navigate('home')} onBookNow={() => bookService('Education')} />
++        <EducationServicesPage onBack={() => navigate('home')} onBookNow={() => bookService('Education')} />
+       </>
+     );
+   }
+@@ -1695,84 +1519,20 @@ function MainApp() {
+     );
+   }
+ 
+-  if (currentPage === 'professional-dashboard') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <ProfessionalDashboard
+-          onBack={() => navigate('home')}
+-          professionalPhone={userPhone}
+-        />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'register-contractor') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <RegisterContractor onBack={() => navigate('home')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'get-started-customer') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <GetStartedCustomer onBack={() => navigate('home')} selectedLocation={selectedLocation} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'join-professional') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <JoinProfessional onBack={() => navigate('home')} onRegister={() => navigate('register-contractor')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'professional-register') {
++  if (currentPage === 'get-started-customer') {
+     return (
+       <>
+         <SEO title={meta.title} description={meta.description} />
+-        <ProfessionalRegisterPage onBack={() => navigate('home')} onRegister={registerProfessional} />
++        <GetStartedCustomer onBack={() => navigate('home')} selectedLocation={selectedLocation} />
+       </>
+     );
+   }
+ 
+-  if (currentPage === 'benefits') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <BenefitsPage onBack={() => navigate('home')} onRegister={() => navigate('register-contractor')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'training-support') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <TrainingSupport onBack={() => navigate('home')} onRegister={() => navigate('register-contractor')} />
+-      </>
+-    );
+-  }
+-
+-  if (currentPage === 'success-stories') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <SuccessStories onBack={() => navigate('home')} onRegister={() => navigate('register-contractor')} />
+-      </>
+-    );
+-  }
+ 
+   if (currentPage === 'amc-office') {
+     return (
+@@ -1937,19 +1697,7 @@ function MainApp() {
+     );
+   }
+ 
+-  // Contractor Hub
+-  if (currentPage === 'contractor-hub') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <ContractorHubPage
+-          onBack={() => navigate('home')}
+-          isAuthenticated={isAuthenticated}
+-          onLogin={() => navigate('login')}
+-        />
+-      </>
+-    );
+-  }
++
+   // Booking Flow
+   if (currentPage === 'booking-flow') {
+     if (!isAuthenticated) {
+@@ -2015,47 +1763,7 @@ function MainApp() {
+     );
+   }
+ 
+-  // Service Professional - Jobs
+-  if (currentPage === 'sp-jobs') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title="My Jobs - Service Professional | VisvasaHome" description="Manage your service jobs and bookings" />
+-        <SPJobsPage onBack={() => navigate('professional-dashboard')} onNavigate={(page, data) => navigate(page as PageType, data)} />
+-      </>
+-    );
+-  }
+-
+-  // Service Professional - Job Detail
+-  if (currentPage === 'sp-job-detail') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title="Job Details - Service Professional | VisvasaHome" description="View and manage job details" />
+-        <SPJobDetailPage jobId={pageData?.jobId || 'JOB001'} onBack={() => navigate('sp-jobs')} onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
+ 
+-  // Service Professional - Earnings
+-  if (currentPage === 'sp-earnings') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title="My Earnings - Service Professional | VisvasaHome" description="Track your earnings and performance" />
+-        <SPEarningsPage onBack={() => navigate('professional-dashboard')} />
+-      </>
+-    );
+-  }
+ 
+   // Submit Review
+   if (currentPage === 'submit-review') {
+@@ -2107,43 +1815,9 @@ function MainApp() {
+     );
+   }
+ 
+-  // Service Professional - Schedule
+-  if (currentPage === 'sp-schedule') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title="My Schedule - Service Professional | VisvasaHome" description="Set your availability hours and block vacation dates" />
+-        <SPSchedulePage onBack={() => navigate('professional-dashboard')} />
+-      </>
+-    );
+-  }
+ 
+-  // Service Professional - Training Hub
+-  if (currentPage === 'sp-training') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title="Training Hub - Service Professional | VisvasaHome" description="Complete service masterclasses and earn your verified partner certificate" />
+-        <SPTrainingHubPage onBack={() => navigate('professional-dashboard')} />
+-      </>
+-    );
+-  }
+ 
+-  // AMC Packages
+-  if (currentPage === 'amc-packages') {
+-    return (
+-      <>
+-        <SEO title="AMC Packages - Annual Maintenance Contracts | VisvasaHome" description="Choose the perfect maintenance plan for your home or office" />
+-        <AMCPackagesPage onBack={() => navigate('home')} onNavigate={(page, data) => navigate(page as PageType, data)} />
+-      </>
+-    );
+-  }
++
+   // AMC Booking Flow
+   if (currentPage === 'amc-booking') {
+     if (!isAuthenticated) {
+@@ -2206,155 +1880,42 @@ function MainApp() {
+     );
+   }
+ 
+-  // Contractor Quote Comparison
+-  if (currentPage === 'contractor-project') {
+-    return (
+-      <>
+-        <SEO title="Hire a Contractor | VisvasaHome" description="Hire a verified contractor for your project." />
+-        <ContractorProjectPage
+-          categorySlug={pageData?.categorySlug || 'contractor'}
+-          categoryName={pageData?.categoryName || 'Contractors'}
+-          onBack={() => navigate('home')}
+-          onContinue={(data) => navigate('contractor-directory', { projectData: data })}
+-        />
+-      </>
+-    );
+-  }
+-
+-  if (currentPage === 'contractor-directory') {
+-    return (
+-      <>
+-        <SEO title="Contractor Directory | VisvasaHome" description="Browse verified contractors and request quotes." />
+-        <ContractorDirectoryPage
+-          projectData={pageData?.projectData}
+-          onBack={() => navigate('home')}
+-          onRequestQuote={(contractorId) => navigate('contractor-quote-comparison', { projectId: contractorId })}
+-        />
+-      </>
+-    );
+-  }
+-
+-  if (currentPage === 'contractor-quote-comparison') {
+-    if (!isAuthenticated) {
+-      navigate('login');
+-      return null;
+-    }
+-    return (
+-      <>
+-        <SEO title="Compare Contractor Quotes | VisvasaHome" description="Compare quotes from verified contractors" />
+-        <ContractorQuoteComparisonPage projectId={pageData?.projectId || 'REQ001'} onBack={() => navigate('contractor-hub')} onNavigate={(page, data) => navigate(page as PageType, data)} />
+-      </>
+-    );
+-  }
+-
+-  // Investor Relations
+-  if (currentPage === 'investor-relations') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <InvestorRelationsPage onBack={() => navigate('home')} onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
+-
+-  // Partner Portal Pages
+-  if (currentPage === 'partner-home') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerHomePage onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'partner-about') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerAboutPage onBack={() => navigate('partner-home')} onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'partner-terms') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerTermsPage onBack={() => navigate('partner-home')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'partner-privacy') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerPrivacyPage onBack={() => navigate('partner-home')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'partner-anti-discrimination') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerAntiDiscriminationPage onBack={() => navigate('partner-home')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'partner-info-security') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerInfoSecurityPage onBack={() => navigate('partner-home')} />
+-      </>
+-    );
+-  }
+ 
+-  if (currentPage === 'partner-welfare') {
++  // Refund Policy page
++  if (currentPage === 'refund-policy') {
+     return (
+       <>
+         <SEO title={meta.title} description={meta.description} />
+-        <PartnerWelfarePage onBack={() => navigate('partner-home')} />
++        <RefundPolicyPage onBack={() => navigate('home')} onNavigate={(page) => navigate(page as PageType)} />
+       </>
+     );
+   }
+ 
+-  // Partner City Pages
+-  if (currentPage.startsWith('partner-city-')) {
+-    const city = currentPage.replace('partner-city-', '');
++  // Refer & Earn page
++  if (currentPage === 'refer-and-earn') {
+     return (
+       <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <PartnerCityPage
+-          city={city}
+-          onBack={() => navigate('partner-home')}
+-          onRegister={() => navigate('partner-home')}
+-        />
++        <SEO title="Refer & Earn | VisvasaHome" description="Refer friends and earn free services." />
++        <ReferAndEarnPage onBack={() => navigate('profile')} />
+       </>
+     );
+   }
+ 
+-  // Partner Login (redirect to main auth for now)
+-  if (currentPage === 'partner-login') {
++  // Vehicle Services Listing
++  if (['car-services', 'bike-services', 'highway-services'].includes(currentPage)) {
+     return (
+       <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <AuthPage onLoginSuccess={handleLoginSuccess} onBack={() => navigate('partner-home')} />
++        <SEO title="Vehicle Services | VisvasaHome" description="Premium at-home vehicle services." />
++        <ServiceListPage onBack={() => navigate('home')} />
+       </>
+     );
+   }
+ 
+-  // Refund Policy page
+-  if (currentPage === 'refund-policy') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <RefundPolicyPage onBack={() => navigate('home')} onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
+ 
+   // Services & Pricing page
+   if (currentPage === 'services-pricing') {
+@@ -2370,15 +1931,7 @@ function MainApp() {
+     );
+   }
+ 
+-  // Partner FAQ (redirect to main FAQ for now)
+-  if (currentPage === 'partner-faq') {
+-    return (
+-      <>
+-        <SEO title={meta.title} description={meta.description} />
+-        <FAQPage onBack={() => navigate('partner-home')} onNavigate={(page) => navigate(page as PageType)} />
+-      </>
+-    );
+-  }
++
+ 
+   // Home Page
+   const homeStructuredData = {
+@@ -2387,15 +1940,16 @@ function MainApp() {
+   };
+ 
+   return (
+-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-gray-50">
++    <div className="w-full min-h-screen bg-white font-sans flex flex-col">
++      <div className="w-full flex-1 flex flex-col relative overflow-hidden bg-white">
+       <SEO
+         title={meta.title}
+         description={meta.description}
+         structuredData={homeStructuredData}
+       />
+       
+-      {/* Mobile Top Bar */}
+-      <MobileTopBar 
++      {/* Desktop Header */}
++      <DesktopHeader 
+         selectedLocation={selectedLocation}
+         onLocationSelect={setSelectedLocation}
+         isAuthenticated={isAuthenticated}
+@@ -2403,60 +1957,48 @@ function MainApp() {
+         onProfile={() => navigate('profile')}
+         onCartOpen={() => setCartDrawerOpen(true)}
+       />
++      
++      {/* Mobile Top Bar */}
++      {currentPage !== 'home' && (
++        <div className="md:hidden">
++          <MobileTopBar 
++            selectedLocation={selectedLocation}
++            onLocationSelect={setSelectedLocation}
++            isAuthenticated={isAuthenticated}
++            onLogin={() => navigate('login')}
++            onProfile={() => navigate('profile')}
++            onCartOpen={() => setCartDrawerOpen(true)}
++          />
++        </div>
++      )}
++
+ 
+-      {/* Desktop Header */}
+-      <div className="hidden lg:block">
+-        <Header
+-          {...commonHeaderProps}
+-          onNavigate={(page) => navigate(page as PageType)}
+-          isAuthenticated={isAuthenticated}
+-          onLogin={() => navigate('login')}
+-          onProfile={() => navigate('profile')}
+-          onCartOpen={() => setCartDrawerOpen(true)}
+-        />
+-      </div>
+ 
+       <div className="flex-1 overflow-y-auto overflow-x-hidden relative pb-[calc(80px+env(safe-area-inset-bottom))]" id="main-scroll-container">
+         <Hero
+           selectedLocation={selectedLocation}
++          onLocationSelect={setSelectedLocation}
+           onGetStarted={() => { trackCTAClick('Book Service', 'hero'); navigate('booking-flow'); }}
+-          onRegisterContractor={() => { trackCTAClick('Register Contractor', 'hero'); navigate('professional-register'); }}
+-          onContractorHub={() => { trackCTAClick('Contractor Hub', 'hero'); navigate('contractor-hub'); }}
+           onCategoryClick={(slug, data) => navigate(slug as PageType, data)}
+         />
+-        <MobileContactBar />
+-        <HomeCategories onCategoryClick={(slug) => {
+-          trackCTAClick(slug, 'home_categories');
+-          navigate(slug as PageType);
+-        }} />
+-        <ServicesOffered onServiceClick={(slug) => {
+-          if (slug) {
+-            trackCTAClick(slug, 'services_grid');
+-            navigate(slug as PageType);
+-          } else {
+-            trackCTAClick('Book Service', 'services_grid');
+-            navigate('get-started-customer');
+-          }
+-        }} />
++        <HomeFeed onNavigate={(slug) => navigate(slug as PageType)} />
++
+ 
+ 
+-        <div className="hidden lg:block">
+-          <Footer
+-            onNavigate={(page) => navigate(page as PageType)}
+-            onRegisterContractor={() => navigate('professional-register')}
+-          />
+-        </div>
+       </div>
+ 
+-      <MobileBottomNav
+-        currentPage={currentPage}
+-        onNavigate={(page) => navigate(page as PageType)}
+-        onMenuOpen={() => setShowMobileMenu(true)}
+-      />
++      <div className="md:hidden">
++        <MobileBottomNav
++          currentPage={currentPage}
++          onNavigate={(page) => navigate(page as PageType)}
++          onMenuOpen={() => setShowMobileMenu(true)}
++        />
++      </div>
+       <WhatsAppFloatingButton />
+       <FloatingFeedbackButton />
+       <CookieConsent onPreferencesClick={() => navigate('privacy-policy')} />
+-      <InteractiveTour />
++      <InteractiveTour isAuthenticated={isAuthenticated} />
++      </div>
+     </div>
+   );
+ }
+@@ -2465,7 +2007,7 @@ export default function App() {
+   return (
+     <ToastProvider>
+       <MainApp />
+-      <DemoSandboxPanel />
++
+     </ToastProvider>
+   );
+ }
+\ No newline at end of file
