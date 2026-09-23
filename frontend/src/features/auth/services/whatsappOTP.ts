@@ -46,7 +46,7 @@ export async function sendWhatsAppOTP(phoneNumber: string): Promise<OTPResponse>
 
     // Production mode - Send via Twilio WhatsApp API
     // API endpoint will be /api/send-whatsapp-otp when deployed to Vercel
-    const apiUrl = process.env.VITE_API_URL || '/api/send-whatsapp-otp';
+    const apiUrl = import.meta.env.VITE_API_URL || '/api/send-whatsapp-otp';
 
     const response = await fetch(apiUrl, {
       method: 'POST',

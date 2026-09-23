@@ -10,10 +10,14 @@ export class HttpApiAdapter implements IHttpClient {
 
   private async request<T>(endpoint: string, options: RequestInit): Promise<ApiResponse<T>> {
     try {
+      const token = localStorage.getItem('visvasahome_access_token');
+      const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
+
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         ...options,
         headers: {
           'Content-Type': 'application/json',
+          ...authHeaders,
           ...options.headers,
         },
       });

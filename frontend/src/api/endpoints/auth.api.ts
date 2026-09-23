@@ -16,7 +16,7 @@ export const AuthApi = {
     apiClient.post<{ success: boolean }>('/auth/send-otp', { phone }),
     
   verifyOtp: (credentials: LoginCredentials) => 
-    apiClient.post<AuthResponse>('/auth/verify', credentials),
+    apiClient.post<AuthResponse>('/auth/verify-otp', credentials),
     
   logout: () => 
     apiClient.post<{ success: boolean }>('/auth/logout'),

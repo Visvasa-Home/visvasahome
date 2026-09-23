@@ -1,0 +1,5 @@
+- [ ] Update `HomeFeed.tsx` navigation for banners and search
+- [ ] Ensure `ServiceCategoryPageTemplate.tsx` cards open the detail modal
+- [ ] Add "View Cart" shortcut to `ServiceDetailModal.tsx`
+- [ ] Integrate Slot Selection into `CartDrawer.tsx`
+- [ ] Streamline `BookingFlowPage.tsx` logic for pre-filled slots

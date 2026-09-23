@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { Phone, ArrowRight, Shield, CheckCircle, AlertCircle, MessageCircle, ChevronLeft } from 'lucide-react';
-import { sendSMSOTP, sendWhatsAppOTP, verifyOTP, type OTPMethod } from '@auth/services/otpService';
-import { getUserByPhone, createUser } from '@core/db/database';
-import { isSupabaseConfigured } from '@core/db/supabaseClient';
-import { validate, schemas } from '@auth/services/security';
+import { AuthApi } from '@api/endpoints/auth.api';
 import { applyReferralCode, awardSignupBonus } from '@customer/services/loyaltyService';
 
 interface AuthPageProps {
@@ -14,7 +11,7 @@ interface AuthPageProps {
 export function AuthPage({ onLoginSuccess, onBack }: AuthPageProps) {
   const [step, setStep] = useState<'phone' | 'method' | 'otp'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [selectedMethod, setSelectedMethod] = useState<OTPMethod | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<'sms' | 'whatsapp' | null>(null);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -27,17 +24,15 @@ export function AuthPage({ onLoginSuccess, onBack }: AuthPageProps) {
     setError('');
     setSuccess('');
 
-    // Validate phone number using Zod
-    const validation = validate(schemas.phone, phoneNumber);
-    if (!validation.success) {
-      setError(validation.error);
+    if (phoneNumber.length !== 10) {
+      setError('Please enter a valid 10-digit mobile number');
       return;
     }
 
     setStep('method');
   };
 
-  const handleMethodSelect = async (method: OTPMethod) => {
+  const handleMethodSelect = async (method: 'sms' | 'whatsapp') => {
     setSelectedMethod(method);
     setError('');
     setSuccess('');
@@ -45,19 +40,14 @@ export function AuthPage({ onLoginSuccess, onBack }: AuthPageProps) {
     setLoading(true);
 
     try {
-      let response;
-
-      if (method === 'sms') {
-        response = await sendSMSOTP(phoneNumber);
-      } else if (method === 'whatsapp') {
-        response = await sendWhatsAppOTP(phoneNumber);
-      }
+      const formattedPhone = phoneNumber.startsWith('+91') ? phoneNumber : `+91${phoneNumber}`;
+      const response = await AuthApi.sendOtp(formattedPhone);
 
       if (response && response.success) {
-        setSuccess(response.message);
+        setSuccess('OTP sent successfully!');
         setStep('otp');
       } else {
-        setError(response?.message || 'Failed to send OTP. Please try again.');
+        setError(response.error?.message || 'Failed to send OTP. Please try again.');
       }
     } catch (error) {
       setError('Network error. Please check your connection and try again.');
@@ -95,87 +85,50 @@ export function AuthPage({ onLoginSuccess, onBack }: AuthPageProps) {
     setSuccess('');
 
     const otpValue = otp.join('');
-    // Validate OTP using Zod
-    const validation = validate(schemas.otp, otpValue);
-    if (!validation.success) {
-      setError(validation.error);
+    if (otpValue.length !== 6) {
+      setError('Please enter a valid 6-digit OTP');
       return;
     }
 
     setLoading(true);
 
     try {
-      // Verify OTP using phone number
-      const isValid = verifyOTP(phoneNumber, otpValue);
+      const formattedPhone = phoneNumber.startsWith('+91') ? phoneNumber : `+91${phoneNumber}`;
+      
+      const response = await AuthApi.verifyOtp({
+        phone: formattedPhone,
+        otp: otpValue
+      });
 
-      if (!isValid) {
-        setError('Invalid or expired OTP. Please try again.');
+      if (!response.success || !response.data) {
+        setError(response.error?.message || 'Invalid or expired OTP. Please try again.');
         setOtp(['', '', '', '', '', '']);
         document.getElementById('otp-0')?.focus();
         setLoading(false);
         return;
       }
 
-      // OTP verified successfully
-      const formattedPhone = phoneNumber.startsWith('+91') ? phoneNumber : `+91${phoneNumber}`;
+      const { user, token, refresh_token } = response.data as any;
 
-      // Always query/create user in database (handles both Supabase & local storage emulation)
-      try {
-        let user = await getUserByPhone(formattedPhone);
-
-        const isNewUser = !user;
-        // If user doesn't exist, create new user in the database
-        if (!user) {
-          const phoneSuffix = phoneNumber.slice(-4);
-          const randomNum = Math.floor(10 + Math.random() * 90);
-          const dbCustomerId = `VH-${phoneSuffix}${randomNum}`;
-
-          user = await createUser({
-            id: dbCustomerId,
-            phone: formattedPhone,
-            role: 'customer',
-            name: 'Valued Customer'
-          });
-        }
-
-        if (user && isNewUser) {
-          // Apply referral code if provided
-          if (referralCode.trim()) {
-            const refResult = await applyReferralCode(referralCode.trim(), user.id, user.name || 'Valued Customer');
-            if (refResult.success) {
-              console.log(`[REFERRAL] Successfully applied referral code: ${referralCode}`);
-            } else {
-              console.warn(`[REFERRAL] Failed to apply referral code: ${refResult.message}`);
-            }
-          }
-
-          // Award welcome signup bonus
-          await awardSignupBonus(user.id);
-        }
-
-        // Store user session with database ID
-        if (user) {
-          localStorage.setItem('visvasahome_user_id', user.id);
-          localStorage.setItem('visvasahome_user_role', user.role);
-          localStorage.setItem('visvasahome_vh_id', user.id);
-        }
-      } catch (dbError) {
-        console.error('Database user lookup/creation error:', dbError);
-        
-        // Fallback in case of absolute failure
-        let fallbackVhId = localStorage.getItem('visvasahome_vh_id');
-        if (!fallbackVhId) {
-          const phoneSuffix = phoneNumber.slice(-4);
-          const randomNum = Math.floor(10 + Math.random() * 90);
-          fallbackVhId = `VH-${phoneSuffix}${randomNum}`;
-          localStorage.setItem('visvasahome_vh_id', fallbackVhId);
-        }
-        localStorage.setItem('visvasahome_user_id', fallbackVhId);
-        localStorage.setItem('visvasahome_user_role', 'customer');
+      // Store tokens and user info
+      localStorage.setItem('visvasahome_access_token', token);
+      if (refresh_token) {
+        localStorage.setItem('visvasahome_refresh_token', refresh_token);
       }
-
-      // Always set the phone number as primary identifier for fallback
+      localStorage.setItem('visvasahome_user_id', user.id);
+      localStorage.setItem('visvasahome_user_role', user.role || 'customer');
+      localStorage.setItem('visvasahome_vh_id', user.id);
       localStorage.setItem('visvasahome_user_phone', formattedPhone);
+      
+      // Apply referral code if provided
+      if (referralCode.trim()) {
+        const refResult = await applyReferralCode(referralCode.trim(), user.id, user.name || 'Valued Customer');
+        if (refResult.success) {
+          console.log(`[REFERRAL] Successfully applied referral code: ${referralCode}`);
+        } else {
+          console.warn(`[REFERRAL] Failed to apply referral code: ${refResult.message}`);
+        }
+      }
 
       setSuccess('Verification successful! Logging you in...');
       setTimeout(() => {
@@ -198,20 +151,15 @@ export function AuthPage({ onLoginSuccess, onBack }: AuthPageProps) {
     setLoading(true);
 
     try {
-      let response;
-
-      if (selectedMethod === 'sms') {
-        response = await sendSMSOTP(phoneNumber);
-      } else if (selectedMethod === 'whatsapp') {
-        response = await sendWhatsAppOTP(phoneNumber);
-      }
+      const formattedPhone = phoneNumber.startsWith('+91') ? phoneNumber : `+91${phoneNumber}`;
+      const response = await AuthApi.sendOtp(formattedPhone);
 
       if (response && response.success) {
         setSuccess('OTP resent successfully!');
         // Clear success message after 3 seconds
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError(response?.message || 'Failed to resend OTP');
+        setError(response.error?.message || 'Failed to resend OTP');
       }
     } catch (error) {
       setError('Network error. Please try again.');
