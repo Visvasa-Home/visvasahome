@@ -1,0 +1,1 @@
+{"version":3,"file":"payments.d.ts","sourceRoot":"","sources":["../../../src/gateway/routers/payments.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,SAAS,CAAC;AAW/C,wBAAsB,cAAc,CAAC,OAAO,EAAE,eAAe,GAAG,OAAO,CAAC,IAAI,CAAC,CAgD5E"}

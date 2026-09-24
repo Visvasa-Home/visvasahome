@@ -1,0 +1,1 @@
+{"version":3,"file":"batch-dispatch.worker.d.ts","sourceRoot":"","sources":["../../../src/services/dispatch/batch-dispatch.worker.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;GAcG;AAcH,qBAAa,mBAAmB;IAC9B,OAAO,CAAC,KAAK,CAA+C;IAE5D,KAAK,IAAI,IAAI;IAKb,IAAI,IAAI,IAAI;YAQE,IAAI;CA8DnB;AAED,eAAO,MAAM,mBAAmB,qBAA4B,CAAC"}

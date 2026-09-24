@@ -1,0 +1,1 @@
+{"version":3,"file":"vault.d.ts","sourceRoot":"","sources":["../../src/lib/vault.ts"],"names":[],"mappings":"AAGA;;;GAGG;AACH,cAAM,YAAY;IAEhB,OAAO,CAAC,YAAY,CAA+C;IAGnE,OAAO,CAAC,KAAK,CAA2D;IAElE,SAAS,CAAC,UAAU,EAAE,MAAM,GAAG,OAAO,CAAC,MAAM,CAAC;CAyCrD;AAED,eAAO,MAAM,KAAK,cAAqB,CAAC"}

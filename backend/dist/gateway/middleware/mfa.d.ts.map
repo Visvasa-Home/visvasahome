@@ -1,0 +1,1 @@
+{"version":3,"file":"mfa.d.ts","sourceRoot":"","sources":["../../../src/gateway/middleware/mfa.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,YAAY,EAAE,MAAM,SAAS,CAAC;AAQ5D;;;GAGG;AACH,wBAAsB,UAAU,CAC9B,OAAO,EAAE,cAAc,EACvB,KAAK,EAAE,YAAY,GAClB,OAAO,CAAC,IAAI,CAAC,CA2Bf"}

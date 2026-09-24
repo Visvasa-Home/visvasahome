@@ -1,0 +1,1 @@
+{"version":3,"file":"audit.d.ts","sourceRoot":"","sources":["../../../src/gateway/middleware/audit.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,YAAY,EAAE,MAAM,SAAS,CAAC;AAO5D;;;GAGG;AACH,wBAAsB,gBAAgB,CAAC,OAAO,EAAE,cAAc,EAAE,KAAK,EAAE,YAAY,GAAG,OAAO,CAAC,IAAI,CAAC,CA4BlG"}

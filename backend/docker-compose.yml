@@ -1,0 +1,428 @@
+version: '3.8'
+
+services:
+
+  # ─── Infrastructure ──────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-visvasahome}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-visvasahome123}
+      POSTGRES_DB: ${POSTGRES_DB:-visvasahome}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-visvasahome}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis123}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: visvasahome-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+
+  # ─── API Gateway ─────────────────────────────────────────────────────────────
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn gateway.main:app --host 0.0.0.0 --port 3000 --reload
+    ports:
+      - "3000:3000"
+    env_file: .env
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  # ─── Core Services ────────────────────────────────────────────────────────────
+
+  auth-service:
+    build: .
+    command: uvicorn services.auth.main:app --host 0.0.0.0 --port 3001 --reload
+    ports:
+      - "3001:3001"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_auth
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  user-service:
+    build: .
+    command: uvicorn services.user.main:app --host 0.0.0.0 --port 3002 --reload
+    ports:
+      - "3002:3002"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_user
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  partner-service:
+    build: .
+    command: uvicorn services.partner.main:app --host 0.0.0.0 --port 3003 --reload
+    ports:
+      - "3003:3003"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_provider
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  catalog-service:
+    build: .
+    command: uvicorn services.catalog.main:app --host 0.0.0.0 --port 3004 --reload
+    ports:
+      - "3004:3004"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_catalog
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  booking-service:
+    build: .
+    command: uvicorn services.booking.main:app --host 0.0.0.0 --port 3005 --reload
+    ports:
+      - "3005:3005"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_booking
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  payment-service:
+    build: .
+    command: uvicorn services.payment.main:app --host 0.0.0.0 --port 3006 --reload
+    ports:
+      - "4006:3006"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_payment
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  notification-service:
+    build: .
+    command: uvicorn services.notification.main:app --host 0.0.0.0 --port 3007 --reload
+    ports:
+      - "3007:3007"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_outbox
+    volumes:
+      - .:/app
+    depends_on:
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  rating-service:
+    build: .
+    command: uvicorn services.rating.main:app --host 0.0.0.0 --port 3008 --reload
+    ports:
+      - "3008:3008"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_rating
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  admin-service:
+    build: .
+    command: uvicorn services.admin.main:app --host 0.0.0.0 --port 3009 --reload
+    ports:
+      - "3009:3009"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  chat-service:
+    build: .
+    command: uvicorn services.chat.main:app --host 0.0.0.0 --port 3011 --reload
+    ports:
+      - "3011:3011"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_chat
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  matching-service:
+    build: .
+    command: python -m services.matching.main
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_booking
+    volumes:
+      - .:/app
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  # ─── New Services ─────────────────────────────────────────────────────────────
+
+  amc-service:
+    build: .
+    command: uvicorn services.amc.main:app --host 0.0.0.0 --port 3013 --reload
+    ports:
+      - "3013:3013"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_catalog
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  contractor-service:
+    build: .
+    command: uvicorn services.contractor.main:app --host 0.0.0.0 --port 3014 --reload
+    ports:
+      - "3014:3014"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_provider
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  location-service:
+    build: .
+    command: uvicorn services.location.main:app --host 0.0.0.0 --port 3015 --reload
+    ports:
+      - "3015:3015"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_user
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  complaints-service:
+    build: .
+    command: uvicorn services.complaints.main:app --host 0.0.0.0 --port 3016 --reload
+    ports:
+      - "3016:3016"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_rating
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  analytics-service:
+    build: .
+    command: uvicorn services.analytics.main:app --host 0.0.0.0 --port 3017 --reload
+    ports:
+      - "4017:3017"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_analytics
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  wallet-service:
+    build: .
+    command: uvicorn services.wallet.main:app --host 0.0.0.0 --port 3018 --reload
+    ports:
+      - "3018:3018"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-visvasahome}:${POSTGRES_PASSWORD:-visvasahome123}@postgres:5432/visvasahome_payment
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+
+  # ─── Observability ────────────────────────────────────────────────────────────
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3012:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/provisioning/dashboards:/var/lib/grafana/dashboards
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"   # UI
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
+
+
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

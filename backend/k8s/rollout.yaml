@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: visvasahome-backend
+  namespace: prod
+spec:
+  replicas: 3
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 10m}
+      - setWeight: 50
+      - pause: {duration: 10m}
+  selector:
+    matchLabels:
+      app: visvasahome-backend
+  template:
+    metadata:
+      labels:
+        app: visvasahome-backend
+    spec:
+      containers:
+      - name: backend
+        image: IMAGE_PLACEHOLDER
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10

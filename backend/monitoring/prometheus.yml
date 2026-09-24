@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'visvasahome-services'
+    static_configs:
+      - targets:
+          - 'api-gateway:3000'
+          - 'auth-service:3001'
+          - 'user-service:3002'
+          - 'partner-service:3003'
+          - 'catalog-service:3004'
+          - 'booking-service:3005'
+          - 'payment-service:3006'
+          - 'rating-service:3008'
+          - 'admin-service:3009'
+          - 'chat-service:3011'
