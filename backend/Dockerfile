@@ -16,8 +16,11 @@ COPY . .
 # Set PYTHONPATH so absolute imports (like `from shared...`) work correctly
 ENV PYTHONPATH=/app
 
+# Make script executable
+RUN chmod +x start.sh
+
 # Expose default port
 EXPOSE 8000
 
-# Default command (can be overridden by docker-compose or Kubernetes manifests for different microservices)
-CMD ["uvicorn", "services.booking.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Default command
+CMD ["./start.sh"]
