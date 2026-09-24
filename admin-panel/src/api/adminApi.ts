@@ -2,7 +2,7 @@
 // Typed fetch client for the VisvasaHome Admin Panel.
 // Calls the API Gateway (port 3000) with admin JWT.
 
-const API_GATEWAY = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_GATEWAY = import.meta.env.VITE_API_URL || 'https://visvasahomebackend.onrender.com';
 
 // Admin JWT is stored in localStorage after login
 function getToken(): string {

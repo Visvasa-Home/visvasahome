@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_PRO_API_URL || 'http://localhost:4000';
+const BASE_URL = import.meta.env.VITE_PRO_API_URL || 'https://visvasahomebackend.onrender.com';
 
 const api = axios.create({
   baseURL: BASE_URL,
