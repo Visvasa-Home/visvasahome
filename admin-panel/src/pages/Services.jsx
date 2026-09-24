@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://visvasahomebackend.onrender.com';
 
 export default function Services() {
   const [services, setServices] = useState([]);

@@ -41,7 +41,8 @@ export default function AdminLayout() {
     if (!socket) {
       const io = (window as any).io;
       if (io) {
-        const s = io('http://localhost:8000');
+        const socketUrl = import.meta.env.VITE_API_URL || 'https://visvasahomebackend.onrender.com';
+        const s = io(socketUrl);
         (window as any).__adminSocket = s;
         s.on('SOS_ALERT_TRIGGERED', (data: any) => {
           setSosAlerts(prev => [data, ...prev]);
