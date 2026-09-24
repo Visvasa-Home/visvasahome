@@ -3,14 +3,14 @@ import { Service, Category } from '../../domain/models';
 
 export const ServicesApi = {
   getCategories: () => 
-    apiClient.get<Category[]>('/categories'),
+    apiClient.get<Category[]>('/catalog/categories'),
     
   getServicesByCategory: (categoryId: string) => 
-    apiClient.get<Service[]>(`/services`, { params: { categoryId } }),
+    apiClient.get<Service[]>(`/catalog/services`, { params: { categoryId } }),
     
   getServiceDetails: (serviceId: string) => 
-    apiClient.get<Service>(`/services/${serviceId}`),
+    apiClient.get<Service>(`/catalog/services/${serviceId}`),
     
   searchServices: (query: string) => 
-    apiClient.get<Service[]>(`/services/search`, { params: { q: query } })
+    apiClient.get<Service[]>(`/catalog/services/search`, { params: { q: query } })
 };

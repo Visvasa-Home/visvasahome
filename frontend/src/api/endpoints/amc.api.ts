@@ -3,11 +3,11 @@ import { AMCPackage } from '../../domain/models';
 
 export const AmcApi = {
   getPackages: (type?: 'home' | 'office' | 'commercial') => 
-    apiClient.get<AMCPackage[]>('/amc/packages', { params: type ? { type } : undefined }),
+    apiClient.get<AMCPackage[]>('/amc/plans', { params: type ? { type } : undefined }),
     
   getPackageDetails: (packageId: string) => 
-    apiClient.get<AMCPackage>(`/amc/packages/${packageId}`),
+    apiClient.get<AMCPackage>(`/amc/plans/${packageId}`),
     
   subscribeToPackage: (packageId: string, addressId: string) => 
-    apiClient.post<{ subscriptionId: string }>('/amc/subscribe', { packageId, addressId })
+    apiClient.post<{ subscriptionId: string }>('/amc/subscribe', { plan_id: packageId, address_id: addressId })
 };
